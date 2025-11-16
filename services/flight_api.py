@@ -18,7 +18,8 @@ class FlightAPIService:
             'Berlin': 'BER',
             'Paris': 'PAR',
             'Manchester': 'MAN',
-            'Liverpool': 'LPL'
+            'Liverpool': 'LPL',
+            'Kraków': 'KRK'
         }
     
     def get_access_token(self):
@@ -42,10 +43,12 @@ class FlightAPIService:
         
         origin_code = self.city_airports.get(origin_city, 'LON')
         destination_code = self.city_airports.get(destination_city, 'MAD')
-        
+
         match_datetime = datetime.fromisoformat(match_date.replace('Z', '+00:00'))
-        departure_date = (match_datetime - timedelta(days=1)).strftime('%Y-%m-%d')
-        return_date = (match_datetime + timedelta(days=1)).strftime('%Y-%m-%d')
+        current_year = datetime.now().year
+        future_match_datetime = match_datetime.replace(year=current_year)
+        departure_date = (future_match_datetime - timedelta(days=1)).strftime('%Y-%m-%d')
+        return_date = (future_match_datetime + timedelta(days=1)).strftime('%Y-%m-%d')
         
         url = f"{self.base_url}/shopping/flight-offers"
         headers = {'Authorization': f'Bearer {self.token}'}
@@ -65,11 +68,15 @@ class FlightAPIService:
             
             if data.get('data'):
                 prices = [float(offer['price']['total']) for offer in data['data']]
-                return min(prices) if prices else 200
+                price = min(prices) if prices else 200
+                link = f"https://www.google.com/travel/flights?q=Flights%20from%20{origin_code}%20to%20{destination_code}%20on%20{departure_date}%20through%20{return_date}"
+                return {'price': price, 'link': link}
         except Exception as e:
             print(f"Error fetching flight prices: {e}")
         
-        return self._estimate_flight_price(origin_city, destination_city)
+        price = self._estimate_flight_price(origin_city, destination_city)
+        link = f"https://www.google.com/travel/flights?q=Flights%20from%20{origin_code}%20to%20{destination_code}%20on%20{departure_date}%20through%20{return_date}"
+        return {'price': price, 'link': link}
     
     def _estimate_flight_price(self, origin, destination):
         base_prices = {

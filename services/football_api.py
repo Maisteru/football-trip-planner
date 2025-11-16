@@ -48,12 +48,14 @@ class FootballAPIService:
     def get_upcoming_matches(self, team_id, match_type='all'):
         url = f"{self.base_url}/fixtures"
         
+        team_id = int(team_id)
         today = datetime.now()
         today_2023 = today.replace(year=2023).strftime('%Y-%m-%d')
         future_2023 = (today.replace(year=2023) + timedelta(days=90)).strftime('%Y-%m-%d')
         
         params = {
             'team': team_id,
+            'season': 2023,
             'from': today_2023,
             'to': future_2023,
             'status': 'FT'
@@ -63,7 +65,9 @@ class FootballAPIService:
             response = requests.get(url, headers=self.headers, params=params)
             response.raise_for_status()
             data = response.json()
-            
+
+            print(f"API Response: {data}")
+
             matches = []
             for fixture in data.get('response', []):
                 is_home = fixture['teams']['home']['id'] == team_id

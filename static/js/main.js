@@ -157,6 +157,18 @@ function displayResults(data) {
     document.getElementById('ticketCost').textContent = `€${data.costs.ticket.toFixed(2)}`;
     document.getElementById('totalCost').textContent = `€${data.costs.total.toFixed(2)}`;
     
+    if (data.links && data.links.flight) {
+        const flightLink = document.getElementById('flightLink');
+        flightLink.href = data.links.flight;
+        flightLink.style.display = 'inline-block';
+    }
+    
+    if (data.links && data.links.hotel) {
+        const hotelLink = document.getElementById('hotelLink');
+        hotelLink.href = data.links.hotel;
+        hotelLink.style.display = 'inline-block';
+    }
+    
     document.getElementById('resultsSection').style.display = 'block';
     document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
 }

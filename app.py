@@ -8,7 +8,7 @@ from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 football_service = FootballAPIService(app.config['FOOTBALL_API_KEY'])
 flight_service = FlightAPIService(app.config['AMADEUS_API_KEY'], app.config['AMADEUS_API_SECRET'])
@@ -46,13 +46,13 @@ def calculate_trip():
     
     match_details = football_service.get_match_details(match_id)
     
-    flight_cost = flight_service.get_flight_price(
+    flight_data = flight_service.get_flight_price(
         origin_city,
         match_details['city'],
         match_details['date']
     )
     
-    hotel_cost = hotel_service.get_hotel_price(
+    hotel_data = hotel_service.get_hotel_price(
         match_details['city'],
         match_details['date']
     )
@@ -63,15 +63,19 @@ def calculate_trip():
         match_details['away_team']
     )
     
-    total_cost = calculator.calculate_total(flight_cost, hotel_cost, ticket_cost)
+    total_cost = calculator.calculate_total(flight_data['price'], hotel_data['price'], ticket_cost)
     
     return jsonify({
         'match': match_details,
         'costs': {
-            'flight': flight_cost,
-            'hotel': hotel_cost,
+            'flight': flight_data['price'],
+            'hotel': hotel_data['price'],
             'ticket': ticket_cost,
             'total': total_cost
+        },
+        'links': {
+            'flight': flight_data['link'],
+            'hotel': hotel_data['link']
         }
     })
 

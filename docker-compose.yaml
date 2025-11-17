@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:5000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key}
+      - FOOTBALL_API_KEY=${FOOTBALL_API_KEY}
+      - AMADEUS_API_KEY=${AMADEUS_API_KEY}
+      - AMADEUS_API_SECRET=${AMADEUS_API_SECRET}
+      - BOOKING_API_KEY=${BOOKING_API_KEY}
+    volumes:
+      - .:/app
+    restart: unless-stopped

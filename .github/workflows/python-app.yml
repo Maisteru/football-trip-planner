@@ -33,9 +33,10 @@ jobs:
     - name: Run unit tests
       run: |
         pytest tests/ -v --cov=services --cov=app --cov-report=xml --cov-report=term
-    
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: false
+
+    ## Maybe later aligater 
+    # - name: Upload coverage reports
+    #   uses: codecov/codecov-action@v3
+    #   with:
+    #     file: ./coverage.xml
+    #     fail_ci_if_error: false

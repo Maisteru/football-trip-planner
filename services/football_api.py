@@ -66,7 +66,7 @@ class FootballAPIService:
             response.raise_for_status()
             data = response.json()
 
-            print(f"API Response: {data}")
+            # print(f"API Response: {data}")
 
             matches = []
             for fixture in data.get('response', []):

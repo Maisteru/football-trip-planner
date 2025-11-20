@@ -2,6 +2,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 users_db = {
     'kris': generate_password_hash('twojastara'),
+    'admin': generate_password_hash('admin123'),
+    'user': generate_password_hash('password123'),
 }
 
 class User:

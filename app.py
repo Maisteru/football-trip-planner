@@ -15,19 +15,23 @@ flight_service = FlightAPIService(app.config['AMADEUS_API_KEY'], app.config['AMA
 hotel_service = HotelAPIService(app.config['BOOKING_API_KEY'])
 calculator = CostCalculator()
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/api/leagues', methods=['GET'])
 def get_leagues():
     leagues = football_service.get_top_leagues()
     return jsonify(leagues)
 
+
 @app.route('/api/teams/<int:league_id>', methods=['GET'])
 def get_teams(league_id):
     teams = football_service.get_teams_by_league(league_id)
     return jsonify(teams)
+
 
 @app.route('/api/matches', methods=['POST'])
 def get_matches():
